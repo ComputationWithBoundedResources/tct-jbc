@@ -1,0 +1,6 @@
+tags
+TAGS
+Makefile
+.cabal-sandbox/
+dist/
+cabal.sandbox.config

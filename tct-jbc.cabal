@@ -1,0 +1,90 @@
+Name:          tct-jbc
+Version:       3.0.0
+Author:
+  Georg Moser, Michael Schaper
+Maintainer:
+  Michael Schaper <michael.schaper@uibk.ac.at>
+Category:      Program Analysis
+Stability:     Experimental
+License:       BSD3
+License-file:  LICENSE
+Homepage:      http://cl-informatik.uibk.ac.at/software/tct/
+Synopsis:      A Complexity Analyser for Integer Transition Systems
+Description:
+  The Tyrolean Complexity Tool (TcT for short) is a tool for proving resource
+  bounds for different formal systems. This package provides techniques to
+  analyse runtime complexity of Jinja bytecode (JBC) probgrams.
+Cabal-version: >= 1.8
+Build-type:    Simple
+
+source-repository head
+  type:     git
+  location: git://github.com/ComputationWithBoundedResources/tct-jbc
+
+executable tct-jbc
+  main-is: 
+    Tct/Jbc/Main.hs
+  hs-source-dirs:
+    src
+  build-depends:
+    containers     >= 0.5 && < 0.6,
+    base           == 4.*,
+    mtl            >= 2.1 && <= 2.3,
+
+    term-rewriting == 0.2.*,
+    jat            == 1.2.0.*,
+    slogic         == 0.*,
+
+    tct-core       == 3.*,
+    tct-common     == 3.*,
+    tct-its        == 3.*,
+    tct-trs        == 3.*
+
+  extensions: 
+    DataKinds,
+    DeriveDataTypeable,
+    FlexibleInstances,
+    MultiParamTypeClasses,
+    TypeOperators,
+    TypeSynonymInstances
+
+  ghc-options:
+    -j -Wall -threaded -fforce-recomp -fno-warn-orphans -fno-spec-constr-count -rtsopts -with-rtsopts=-N
+
+library
+  hs-source-dirs:
+    src
+  exposed-modules:
+    Tct.Jbc
+    Tct.Jbc.Data
+    Tct.Jbc.Data.Mode
+    Tct.Jbc.Data.Problem
+    Tct.Jbc.Encoding.ArgumentFiltering
+    Tct.Jbc.Method.ToCTrs
+    Tct.Jbc.Method.ToTrs
+    Tct.Jbc.Method.ToIts
+    Tct.Jbc.Processor
+  build-depends:
+    containers     >= 0.5 && < 0.6,
+    base           == 4.*,
+    mtl            >= 2.1 && <= 2.3,
+
+    term-rewriting == 0.2.*,
+    jat            == 1.2.0.*,
+    slogic         == 0.*,
+
+    tct-core       == 3.*,
+    tct-common     == 3.*,
+    tct-its        == 3.*,
+    tct-trs        == 3.*
+
+  ghc-options:
+    -j -Wall -fno-warn-orphans -fno-spec-constr-count -rtsopts -with-rtsopts=-N
+  extensions:
+    DataKinds,
+    DeriveDataTypeable,
+    FlexibleInstances,
+    MultiParamTypeClasses,
+    TypeOperators,
+    TypeSynonymInstances
+
