@@ -12,6 +12,7 @@ Requirements
   * [term-rewriting-xml](https://github.com/ComputationWithBoundedResources/term-rewriting-xml/)
   * [tct-trs](https://github.com/ComputationWithBoundedResources/tct-trs/)
   * [tct-its](https://github.com/ComputationWithBoundedResources/tct-its/)
+  * [jat](https://github.com/ComputationWithBoundedResources/jat/)
   * [minismt, version 0.6](http://cl-informatik.uibk.ac.at/software/minismt/)
 
 The tool is only tested under GNU/Linux.
@@ -31,6 +32,7 @@ install the packages and executables via `cabal`.
   git clone https://github.com/ComputationWithBoundedResources/term-rewriting-xml
   git clone https://github.com/ComputationWithBoundedResources/tct-trs
   git clone https://github.com/ComputationWithBoundedResources/tct-its
+  git clone https://github.com/ComputationWithBoundedResources/jat
   git clone https://github.com/ComputationWithBoundedResources/tct-jbc
   cabal install **/*.cabal
   ```
