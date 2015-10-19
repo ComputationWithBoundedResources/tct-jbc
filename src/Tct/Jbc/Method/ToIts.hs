@@ -16,14 +16,14 @@ import qualified Jat.Constraints                    as J (PAFun (..), PAFun (..)
 import qualified Jat.Utils.TRS                      as J (PARule, prettyITS, simplifyTRS)
 
 import           Tct.Core
-import qualified Tct.Core.Combinators               as T
-import qualified Tct.Core.Data                      as T
+import           Tct.Core.Processor.Transform       (transform)
 
 import qualified Data.Rewriting.Rule                as RT hiding (vars)
 
 import qualified Tct.Trs.Encoding.ArgumentFiltering as AF
 
-import qualified Tct.Its                            as I
+import qualified Tct.Its as I
+import qualified Tct.Its.Config as I
 
 import           Tct.Jbc.Data
 import           Tct.Jbc.Encoding.ArgumentFiltering (mkFilter)
@@ -35,8 +35,7 @@ import           Tct.Jbc.Encoding.ArgumentFiltering (mkFilter)
 -- transformation from CTRSs to the ITSs
 
 toIts :: Strategy CTrs I.Its
-toIts = T.transform (fromResult . toIts')
-  where fromResult = either (error . show) T.Continue
+toIts = transform "We extract a pure ITS fragment form the current cTRS problem" toIts'
 
 toIts' :: CTrs -> Either String I.Its
 toIts' (CTrs gr rs) =  I.fromString . show . J.prettyITS "a" $ toITS gr rs

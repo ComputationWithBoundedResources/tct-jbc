@@ -11,8 +11,7 @@ import qualified Data.Rewriting.Term                as RT hiding (varsDL)
 import qualified Jat.Constraints                    as J (PAFun (..), PAFun (..), PAVar (..))
 
 import           Tct.Core
-import qualified Tct.Core.Combinators               as T
-import qualified Tct.Core.Data                      as T
+import           Tct.Core.Processor.Transform       (transform)
 
 import qualified Tct.Trs                            as R
 import qualified Tct.Trs.Encoding.ArgumentFiltering as AF
@@ -27,12 +26,10 @@ import           Tct.Jbc.Encoding.ArgumentFiltering (mkFilter)
 --- * TRS ------------------------------------------------------------------------------------------------------------
 -- transformation from CTRSs to TRSs
 toTrs :: Strategy CTrs R.TrsProblem
-toTrs = T.transform (fromResult . toTrs' NoNarrow)
-  where fromResult = either (error . show) T.Continue
+toTrs = transform "We extract a TRS fragment from the current cTRS problem" (toTrs' NoNarrow)
 
 toTrsNarrowed :: Strategy CTrs R.TrsProblem
-toTrsNarrowed = T.transform (fromResult . toTrs' Narrow)
-  where fromResult = either (error . show) T.Continue
+toTrsNarrowed = transform "We extract a TRS fragment from the current cTRS problem" (toTrs' Narrow)
 
 data Narrow = Narrow | NoNarrow deriving Eq
 

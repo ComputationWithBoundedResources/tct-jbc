@@ -1,9 +1,8 @@
 -- | This module provides the default executable tct-jbc.
 module Main (main) where
 
-import Tct.Core (setMode)
-import Tct.Jbc  (jbcMode)
+import Tct.Jbc.Config
 
 main :: IO ()
-main = setMode jbcMode
+main = runJbc jbcConfig
 

@@ -1,15 +1,19 @@
+{-# OPTIONS_GHC -fno-warn-missing-signatures #-}
 module Tct.Jbc.Processor
   ( module M
 
-  , defaultDeclarations
+  , jbcDeclarations
   , itsArg
   , trsArg
   , Narrow (..)
   , narrowArg
 
-  , jatStrategy
+  , jbcStrategy
+  , jbcDeclaration
   , trsStrategy
+  , trsDeclaration
   , itsStrategy
+  , itsDeclaration
   ) where
 
 
@@ -17,15 +21,17 @@ import qualified Data.Foldable           as F
 import           Data.Typeable
 
 import           Tct.Core
-import qualified Tct.Core.Common.Parser  as P
+import qualified Tct.Core.Common.Parser  as TP
 import qualified Tct.Core.Data           as T
-import qualified Tct.Core.Parse          as P
-import qualified Tct.Core.Processor.Cast as T
+import qualified Tct.Core.Parse          as TP
 
 import qualified Tct.Trs                 as R
+import qualified Tct.Trs.Data            as R
+import qualified Tct.Trs.Declarations    as R
 
 import qualified Tct.Its                 as I
 import qualified Tct.Its.Processor       as I
+import qualified Tct.Its.Strategy        as I
 
 
 import           Tct.Jbc.Data
@@ -34,28 +40,41 @@ import           Tct.Jbc.Method.ToIts    as M
 import           Tct.Jbc.Method.ToTrs    as M
 
 
-defaultDeclarations :: [StrategyDeclaration Jbc Jbc]
-defaultDeclarations = []
+jbcDeclarations :: [StrategyDeclaration Jbc Jbc]
+jbcDeclarations =
+  [ T.SD jbcDeclaration
+  , T.SD itsDeclaration
+  , T.SD trsDeclaration ]
 
-jatStrategy ::
-  Strategy R.TrsProblem R.TrsProblem
-  -> Strategy I.Its I.Its
+jbcDeclaration = T.strategy "jbc" (itsArg `optional` I.runtime, trsArg `optional` R.competition) jbcStrategy
+itsDeclaration = T.strategy "its" (OneTuple $ itsArg `optional` I.runtime)                       itsStrategy
+trsDeclaration = T.strategy "trs" (narrowArg `optional` Narrow, trsArg `optional` R.competition) trsStrategy
+
+instance TP.SParsable Jbc o R.TrsStrategy where
+  parseS = TP.withState R.trsDeclarations TP.strategy
+
+instance TP.SParsable Jbc o (Strategy I.Its I.Its) where
+  parseS = TP.withState [T.SD I.runtimeDeclaration] TP.strategy
+
+jbcStrategy ::
+  Strategy I.Its I.Its
+  -> Strategy R.TrsProblem R.TrsProblem
   -> Strategy Jbc Jbc
-jatStrategy sttrs stits =
-  toCTrs >=> fastest
-    [ toTrsNarrowed >=> withTrivialTrs sttrs >=> T.close
-    , toIts         >=> withTrivialIts stits >=> T.close ]
+jbcStrategy stits sttrs =
+  toCTrs .>>> fastest
+    [ toTrsNarrowed .>>> withTrivialTrs sttrs .>>> abort
+    , toIts         .>>> withTrivialIts stits .>>> abort ]
 
 
 --- * its ------------------------------------------------------------------------------------------------------------
 
 withTrivialIts :: T.Strategy I.Its I.Its -> T.Strategy I.Its I.Its
 withTrivialIts st = withProblem $ \prob ->
-  if noConstraints prob then I.boundTrivialSCCs >>> I.empty else st
+  if noConstraints prob then I.boundTrivialSCCs .>>> I.empty else st
   where noConstraints prob = all (null . I.con) (F.toList $ I._irules prob)
 
 itsStrategy :: Strategy I.Its I.Its -> Strategy Jbc Jbc
-itsStrategy stits = toCTrs >=> toIts >=> withTrivialIts stits >=> T.close
+itsStrategy stits = toCTrs .>>> toIts .>>> withTrivialIts stits .>>> abort
 
 
 --- * trs ------------------------------------------------------------------------------------------------------------
@@ -63,15 +82,15 @@ itsStrategy stits = toCTrs >=> toIts >=> withTrivialIts stits >=> T.close
 data Narrow = Narrow | NoNarrow
   deriving (Bounded, Enum, Eq, Typeable, Show)
 
-instance P.SParsable i i Narrow where
-  parseS = P.enum
+instance TP.SParsable i o Narrow where
+  parseS = TP.enum
 
 withTrivialTrs :: Strategy R.TrsProblem R.TrsProblem -> Strategy R.TrsProblem R.TrsProblem
 withTrivialTrs = id
 
 trsStrategy :: Narrow -> Strategy R.TrsProblem R.TrsProblem -> JbcStrategy
-trsStrategy Narrow sttrs   = toCTrs >=> toTrsNarrowed >=> withTrivialTrs sttrs >=> T.close
-trsStrategy NoNarrow sttrs = toCTrs >=> toTrs         >=> withTrivialTrs sttrs >=> T.close
+trsStrategy Narrow sttrs   = toCTrs .>>> toTrsNarrowed .>>> withTrivialTrs sttrs .>>> abort
+trsStrategy NoNarrow sttrs = toCTrs .>>> toTrs         .>>> withTrivialTrs sttrs .>>> abort
 
 
 --- * declaration ----------------------------------------------------------------------------------------------------
