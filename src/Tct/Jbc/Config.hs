@@ -10,9 +10,14 @@ import qualified Control.Applicative        as A (optional)
 import qualified Jinja.Program              as J (ClassId (..), MethodId (..))
 
 import qualified Tct.Core.Common.Pretty     as PP
+import           Tct.Core.Common.Options
 import           Tct.Core.Data              (deflFun)
 import           Tct.Core.Main
 import           Tct.Core
+
+import qualified Tct.Trs                 as R
+
+import qualified Tct.Its as I
 
 import           Tct.Jbc.Data.Problem
 import           Tct.Jbc.Processor
@@ -20,13 +25,12 @@ import           Tct.Jbc.Processor
 
 type JbcConfig = TctConfig Jbc
 
-runJbc :: JbcConfig -> IO ()
+runJbc :: Declared Jbc Jbc => JbcConfig -> IO ()
 runJbc = tct3WithOptions jbcUpdate jbcOptions
 
-jbcConfig :: TctConfig Jbc
+jbcConfig :: (Declared I.Its I.Its, Declared R.TrsProblem R.TrsProblem) => TctConfig Jbc
 jbcConfig = defaultTctConfig parserIO
   `withDefaultStrategy` deflFun jbcDeclaration
-  `addStrategies` jbcDeclarations
 
 parserIO :: FilePath -> IO (Either String Jbc)
 parserIO = fmap parser . readFile

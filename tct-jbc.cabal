@@ -45,6 +45,7 @@ executable tct-jbc
     DataKinds,
     DeriveDataTypeable,
     FlexibleInstances,
+    FlexibleContexts,
     MultiParamTypeClasses,
     TypeOperators,
     TypeSynonymInstances
@@ -84,6 +85,7 @@ library
     DataKinds,
     DeriveDataTypeable,
     FlexibleInstances,
+    FlexibleContexts,
     MultiParamTypeClasses,
     TypeOperators,
     TypeSynonymInstances

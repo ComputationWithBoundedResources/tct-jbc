@@ -23,7 +23,6 @@ import qualified Data.Rewriting.Rule                as RT hiding (vars)
 import qualified Tct.Trs.Encoding.ArgumentFiltering as AF
 
 import qualified Tct.Its as I
-import qualified Tct.Its.Config as I
 
 import           Tct.Jbc.Data
 import           Tct.Jbc.Encoding.ArgumentFiltering (mkFilter)
