@@ -1,4 +1,4 @@
-module Tct.Jbc.Method.ToTrs (toTrs, toTrsNarrowed) where
+module Tct.Jbc.Processor.ToTrs (toTrs, toTrsNarrowed) where
 
 
 import qualified Data.IntSet                        as IS
@@ -14,9 +14,10 @@ import           Tct.Core
 import           Tct.Core.Processor.Transform       (transform)
 
 import qualified Tct.Trs                            as R
+import qualified Tct.Trs.Data.Problem               as R
 import qualified Tct.Trs.Encoding.ArgumentFiltering as AF
 
-import           Tct.Jbc.Data
+import           Tct.Jbc.Data.Problem
 import qualified Jat.Utils.TRS                      as J (simplifyTRS)
 import           Tct.Jbc.Encoding.ArgumentFiltering (mkFilter)
 
@@ -25,15 +26,15 @@ import           Tct.Jbc.Encoding.ArgumentFiltering (mkFilter)
 
 --- * TRS ------------------------------------------------------------------------------------------------------------
 -- transformation from CTRSs to TRSs
-toTrs :: Strategy CTrs R.TrsProblem
+toTrs :: Strategy CTrs R.Trs
 toTrs = transform "We extract a TRS fragment from the current cTRS problem" (toTrs' NoNarrow)
 
-toTrsNarrowed :: Strategy CTrs R.TrsProblem
+toTrsNarrowed :: Strategy CTrs R.Trs
 toTrsNarrowed = transform "We extract a TRS fragment from the current cTRS problem" (toTrs' Narrow)
 
 data Narrow = Narrow | NoNarrow deriving Eq
 
-toTrs' :: Narrow -> CTrs -> Either String R.TrsProblem
+toTrs' :: Narrow -> CTrs -> Either String R.Trs
 -- toTrs' = R.fromRewriting .  (\p -> trace (PP.display $ PP.pretty p) p ) . toRewriting where
 toTrs' n = R.fromRewriting . toRewriting where
   toRewriting (CTrs gr rs) = RT.Problem

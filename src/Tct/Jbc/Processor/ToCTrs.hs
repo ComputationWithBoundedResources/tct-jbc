@@ -1,4 +1,4 @@
-module Tct.Jbc.Method.ToCTrs (toCTrs) where
+module Tct.Jbc.Processor.ToCTrs (toCTrs) where
 
 
 import           Control.Monad.Identity (runIdentity)
@@ -11,7 +11,7 @@ import qualified Jinja.Program          as J (MethodId (..), methods)
 import qualified Tct.Core.Data          as T
 import           Tct.Core.Processor.Transform (transform)
 
-import           Tct.Jbc.Data
+import           Tct.Jbc.Data.Problem
 
 
 toCTrs :: T.Strategy Jbc CTrs

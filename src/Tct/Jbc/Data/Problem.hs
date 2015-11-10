@@ -2,6 +2,7 @@ module Tct.Jbc.Data.Problem
   ( Jbc (..)
   , fromString
   , JbcStrategy
+  , JbcDeclaration
 
   , CTrs (..)
   ) where
@@ -48,7 +49,8 @@ instance Xml.Xml Jbc   where toXml _  = Xml.empty
 fromString :: String -> Jbc
 fromString = flip Jbc Nothing . J.initP . J.fromString
 
-type JbcStrategy = T.Strategy Jbc Jbc
+type JbcStrategy    = T.Strategy Jbc Jbc
+type JbcDeclaration = T.StrategyDeclaration Jbc Jbc
 
 
 --- * cTRS -----------------------------------------------------------------------------------------------------------

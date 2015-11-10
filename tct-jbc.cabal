@@ -57,14 +57,14 @@ library
   hs-source-dirs:
     src
   exposed-modules:
+    Tct.Jbc
     Tct.Jbc.Config
-    Tct.Jbc.Data
     Tct.Jbc.Data.Problem
     Tct.Jbc.Encoding.ArgumentFiltering
-    Tct.Jbc.Method.ToCTrs
-    Tct.Jbc.Method.ToTrs
-    Tct.Jbc.Method.ToIts
-    Tct.Jbc.Processor
+    Tct.Jbc.Processor.ToCTrs
+    Tct.Jbc.Processor.ToTrs
+    Tct.Jbc.Processor.ToIts
+    Tct.Jbc.Strategies
   build-depends:
     containers     >= 0.5 && < 0.6,
     base           == 4.*,

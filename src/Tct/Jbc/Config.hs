@@ -1,7 +1,10 @@
 module Tct.Jbc.Config
-  ( JbcConfig
-  , jbcConfig
+  ( parserIO
+  , parser
+
   , runJbc
+  , JbcConfig
+  , jbcConfig
   ) where
 
 
@@ -20,15 +23,15 @@ import qualified Tct.Trs                 as R
 import qualified Tct.Its as I
 
 import           Tct.Jbc.Data.Problem
-import           Tct.Jbc.Processor
+import           Tct.Jbc.Strategies
 
 
 type JbcConfig = TctConfig Jbc
 
 runJbc :: Declared Jbc Jbc => JbcConfig -> IO ()
-runJbc = tct3WithOptions jbcUpdate jbcOptions
+runJbc = runTctWithOptions jbcUpdate jbcOptions
 
-jbcConfig :: (Declared I.Its I.Its, Declared R.TrsProblem R.TrsProblem) => TctConfig Jbc
+jbcConfig :: (Declared I.Its I.Its, Declared R.Trs R.Trs) => TctConfig Jbc
 jbcConfig = defaultTctConfig parserIO
   `withDefaultStrategy` deflFun jbcDeclaration
 

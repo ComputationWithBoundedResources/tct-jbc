@@ -1,4 +1,4 @@
-module Tct.Jbc.Method.ToIts (toIts) where
+module Tct.Jbc.Processor.ToIts (toIts) where
 
 
 import qualified Data.Map.Strict                    as M
@@ -23,8 +23,9 @@ import qualified Data.Rewriting.Rule                as RT hiding (vars)
 import qualified Tct.Trs.Encoding.ArgumentFiltering as AF
 
 import qualified Tct.Its as I
+import qualified Tct.Its.Config as I (fromString)
 
-import           Tct.Jbc.Data
+import           Tct.Jbc.Data.Problem
 import           Tct.Jbc.Encoding.ArgumentFiltering (mkFilter)
 
 -- import Debug.Trace
