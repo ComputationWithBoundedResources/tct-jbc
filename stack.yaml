@@ -15,6 +15,9 @@ packages:
 - location:
     git: git@github.com:ComputationWithBoundedResources/tct-common
     commit: b88ce5394cb9a7dde6d3a08a0a15391991e36ed5
+- location:
+    git: git@github.com:ComputationWithBoundedResources/jat
+    commit: a84b8ed1b892373db4ec3cded0e72c86e00d8d1d
 
 - location:
     git: git@github.com:ComputationWithBoundedResources/tct-trs
