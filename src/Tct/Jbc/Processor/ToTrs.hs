@@ -48,9 +48,37 @@ toTrs' n = R.fromRewriting . toRewriting where
     , RT.symbols    = []
     , RT.comment    = Just "greetings from jat" }
     where 
-      rules = projectUniv . withNarrowing . elimFreshVars . elimTheory . fst $ unzip rs
+      rules = toString .  withNarrowing . elimFreshVars . fst $ unzip rs
+      -- rules = projectUniv . withNarrowing . elimFreshVars . elimTheory . fst $ unzip rs
       withNarrowing = if n == Narrow then narrowing else id
       narrowing rs' = fst . unzip . J.simplifyTRS gr $ map (\r -> (r,[])) rs'
+
+toString :: [RT.Rule J.PAFun J.PAVar] -> [RT.Rule String String]
+toString =  map (\(RT.Rule l r) -> RT.Rule (toString' l) (toString' r))
+  where
+    toString' (RT.Fun f fs) = RT.Fun (fos f) (toString' `fmap` fs)
+    toString' (RT.Var v)    = RT.Var (vos v)
+    fos f = case f of
+      J.UFun s       -> s
+      J.IConst i     -> '@' :show i
+      J.BConst True  -> "@true"
+      J.BConst False -> "@false"
+      J.Add          -> "@+"
+      J.Sub          -> "@-"
+      J.Not          -> "@!"
+      J.And          -> "@&&"
+      J.Or           -> "@||"
+      J.Lt           -> "@<"
+      J.Lte          -> "@<="
+      J.Gte          -> "@=>"
+      J.Gt           -> "@>"
+      J.Eq           -> "@="
+      J.Neq          -> "/="
+      J.Ass          -> "/:="
+    vos v = case v of
+      J.UVar s i -> s ++ show i
+      J.IVar s i -> "@i" ++ show i
+      J.BVar s i -> "@b" ++ show i
 
 projectUniv :: [RT.Rule J.PAFun J.PAVar] -> [RT.Rule String String]
 projectUniv =  map (\(RT.Rule l r) -> RT.Rule (filterUniv1 l) (filterUniv1 r))

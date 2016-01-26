@@ -14,6 +14,8 @@ module Tct.Jbc.Strategies
   , trsDeclaration
   , itsStrategy
   , itsDeclaration
+  , ctrsStrategy
+  , ctrsDeclaration
   ) where
 
 
@@ -32,13 +34,15 @@ import           Tct.Jbc.Data.Problem
 import           Tct.Jbc.Processor.ToCTrs   as M
 import           Tct.Jbc.Processor.ToIts    as M
 import           Tct.Jbc.Processor.ToTrs    as M
+import           Tct.Jbc.Processor.PolynomialInterpretation    as M
 
 
 jbcDeclarations :: (Declared I.Its I.Its, Declared R.Trs R.Trs) => [StrategyDeclaration Jbc Jbc]
 jbcDeclarations =
   [ T.SD jbcDeclaration
   , T.SD itsDeclaration
-  , T.SD trsDeclaration ]
+  , T.SD trsDeclaration
+  , T.SD ctrsDeclaration ]
 
 jbcDeclaration :: (Declared I.Its I.Its, Declared R.Trs R.Trs) => 
   T.Declaration ('[T.Argument 'T.Optional I.ItsStrategy, T.Argument 'T.Optional R.TrsStrategy] T.:-> Strategy Jbc Jbc)
@@ -52,6 +56,9 @@ trsDeclaration :: Declared R.Trs R.Trs =>
   T.Declaration ('[T.Argument 'T.Optional Narrow, T.Argument 'T.Optional R.TrsStrategy] T.:-> Strategy Jbc Jbc)
 trsDeclaration = T.strategy "trs" (narrowArg `optional` Narrow, trsArg `optional` R.competition) trsStrategy
 
+ctrsDeclaration :: T.Declaration ('[T.Argument 'T.Optional T.Nat, T.Argument 'T.Optional T.Nat] T.:-> Strategy Jbc Jbc)
+ctrsDeclaration = T.strategy "ctrs" R.boundedArgs ctrsStrategy
+
 jbcStrategy ::
   Strategy I.Its I.Its
   -> Strategy R.Trs R.Trs
@@ -59,7 +66,14 @@ jbcStrategy ::
 jbcStrategy stits sttrs =
   toCTrs .>>> fastest
     [ toTrsNarrowed .>>> withTrivialTrs sttrs .>>> abort
-    , toIts         .>>> withTrivialIts stits .>>> abort ]
+    , toIts         .>>> withTrivialIts stits .>>> abort
+    , toCTrs'       .>>> polys 0 2 .>>> abort ]
+
+
+--- * ctrs -----------------------------------------------------------------------------------------------------------
+
+ctrsStrategy :: Int -> Int -> JbcStrategy
+ctrsStrategy l u = toCTrs .>>> toCTrs' .>>> polys l u .>>> close
 
 
 --- * its ------------------------------------------------------------------------------------------------------------
@@ -67,7 +81,7 @@ jbcStrategy stits sttrs =
 withTrivialIts :: T.Strategy I.Its I.Its -> T.Strategy I.Its I.Its
 withTrivialIts st = withProblem $ \prob ->
   if noConstraints prob then I.boundTrivialSCCs .>>> I.empty else st
-  where noConstraints prob = all (null . I.con) (F.toList $ I._irules prob)
+  where noConstraints prob = all (null . I.con) (F.toList $ I.irules_ prob)
 
 itsStrategy :: Strategy I.Its I.Its -> Strategy Jbc Jbc
 itsStrategy stits = toCTrs .>>> toIts .>>> withTrivialIts stits .>>> abort

@@ -64,6 +64,7 @@ library
     Tct.Jbc.Processor.ToCTrs
     Tct.Jbc.Processor.ToTrs
     Tct.Jbc.Processor.ToIts
+    Tct.Jbc.Processor.PolynomialInterpretation
     Tct.Jbc.Strategies
   build-depends:
     containers     >= 0.5 && < 0.6,
