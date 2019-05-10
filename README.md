@@ -1,10 +1,10 @@
-##tct-jbc
+## tct-jbc
 This package is part of the _Tyrolean Complexity Tool (TcT)_ and provides
 automatic complexity analysis of _Jinja Bytecode (JBC)_.
 
 This repository provides the `tct-jbc` library as well as the `tct-jbc` executable.
 
-##Requirements
+## Requirements
 
 Executables:
   * [Glasgow Haskell Compiler, version 7.10](http://www.haskell.org/ghc/) 
@@ -21,17 +21,17 @@ Other packages
 
 The tool is only tested under GNU/Linux.
 
-###Installation
+### Installation
 
-####Using Stack
-We recommend using [stack](https://github.com/commercialhaskell/stack) with the accompanied `stack.yaml` file.
+#### Using Stack
+We recommend using [stack](https://github.com/commercialhaskell/stack) with the accompanied `stack-XXX.yaml` file.
 To build and install the package run following command:
 
 ```bash
 stack install tct-jbc
 ```
 
-###Example Usage
+### Example Usage
 The installation provides an executable `tct-jbc`.
 
 ```bash
